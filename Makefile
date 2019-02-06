@@ -35,11 +35,11 @@ release: ## Build the release tarball
 
 build: ## Build the release Docker image
 	rm -f ${PWD}/tmp/artifacts/$(RELEASE_NAME).tar.gz
-	docker build . -t wocky-build:latest -f Dockerfile.build
+	docker build . -t overseer-build:latest -f Dockerfile.build
 	docker run -it --rm \
 		-v ${PWD}/tmp/artifacts:/artifacts \
 		-e "RELEASE_NAME=$(RELEASE_NAME)" \
-		wocky-build:latest make release
+		overseer-build:latest make release
 	docker build . -f Dockerfile.release \
 		--build-arg RELEASE_NAME=$(RELEASE_NAME) \
 		-t $(IMAGE_REPO)/$(IMAGE_NAME):$(IMAGE_TAG) \
@@ -62,19 +62,19 @@ shipit: build push deploy ## Build, push and deploy the image
 ### Cluster ops
 
 pods: ## Return a list of running pods
-	@kubectl get pods -n $(KUBE_NS) -l 'app=wocky' -o jsonpath='{.items[].metadata.name}'
+	@kubectl get pods -n $(KUBE_NS) -l 'app=overseer-o jsonpath='{.items[].metadata.name}'
 
 status: ## Show the deployment status
-	@kubectl get deployments,pods -n $(KUBE_NS) -l 'app=wocky'
+	@kubectl get deployments,pods -n $(KUBE_NS) -l 'app=overseer'
 
 top: ## Show resource usage for app pods
-	@kubectl top pod -n $(KUBE_NS) -l 'app=wocky'
+	@kubectl top pod -n $(KUBE_NS) -l 'app=overseer'
 
 watch: ## Watch the pods for changes
-	@kubectl get pods -n $(KUBE_NS) -l 'app=wocky' -w
+	@kubectl get pods -n $(KUBE_NS) -l 'app=overseer' -w
 
 define first-pod
-$(shell kubectl get pods -n $(KUBE_NS) -l 'app=wocky' -o jsonpath='{.items[0].metadata.name}')
+$(shell kubectl get pods -n $(KUBE_NS) -l 'app=overseer' -o jsonpath='{.items[0].metadata.name}')
 endef
 
 define do-exec
@@ -93,7 +93,7 @@ exec: ## Execute $CMD on a pod
 console: POD ?= $(first-pod)
 console: ## Start an Iex remote console on a pod
 	@$(call print-pod)
-	@$(call do-exec,bin/wocky remote_console)
+	@$(call do-exec,bin/overseer remote_console)
 
 shell: POD ?= $(first-pod)
 shell: ## Start a shell on a pod
@@ -103,7 +103,7 @@ shell: ## Start a shell on a pod
 describe: POD ?= $(first-pod)
 describe: ## Describe the current release on a pod
 	@$(call print-pod)
-	@$(call do-exec,bin/wocky describe)
+	@$(call do-exec,bin/overseer describe)
 
 logs: POD ?= $(first-pod)
 logs: ## Show the logs for a pod
