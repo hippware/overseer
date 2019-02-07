@@ -13,4 +13,23 @@ defmodule Overseer.Client do
       %{token: token}
     )
   end
+
+  defp handle(:get, :upload, [filename, size, mimeType]) do
+    do_post(
+      :mediaUpload,
+      nil,
+      Query.Media.upload(),
+      %{filename: filename, size: size, mimeType: mimeType, access: "all"}
+    )
+  end
+
+  defp handle(:get, :media_urls, [trosUrl, timeout]) do
+    do_post(
+      :mediaUrls,
+      nil,
+      Query.Media.media_urls(),
+      %{trosUrl: trosUrl, timeout: timeout},
+      timeout: timeout
+    )
+  end
 end

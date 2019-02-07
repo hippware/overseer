@@ -25,6 +25,7 @@ RUN \
       bash \
       ca-certificates \
       expat \
+      imagemagick \
       libgcc \
       libstdc++ \
       ncurses \
@@ -34,6 +35,7 @@ RUN \
     chmod +s /usr/sbin/tcpdump && \
     # Update ca certificates \
     update-ca-certificates --fresh
+    gem install findimagedupes
 
 USER default
 WORKDIR /opt/app

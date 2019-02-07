@@ -8,7 +8,14 @@ defmodule Overseer do
   use Application
 
   def start(_type, _args) do
-    :ok
+    Logger.info "STARTING"
+    Supervisor.start_link(
+      [
+        Overseer.Client.supervisor()
+      ],
+      strategy: :one_for_one,
+      name: Overseer.Supervisor
+    )
   end
 
   def run_op(argv) do
@@ -27,12 +34,7 @@ defmodule Overseer do
   end
 
   def run_op(module, args) do
-    module =
-      Overseer
-      |> to_string()
-      |> Kernel.<>(".")
-      |> Kernel.<>(module)
-      |> String.to_atom()
+    module = Module.concat([Overseer, module])
 
     with true <- Module.open?(module),
          true <- Module.defines?(module, {:run, length(args)}) do

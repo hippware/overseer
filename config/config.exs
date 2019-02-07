@@ -7,5 +7,7 @@ config :overseer,
 
 config :overseer, Overseer.WockyApi,
   client: Overseer.Client,
-  query_caller: CommonGraphQLClient.Caller.Http,
-  http_api_url: "https://testing.dev.tinyrobot.com/graphql"
+  query_caller: CommonGraphQLClient.Caller.WebSocket,
+  http_api_url: "https://testing.dev.tinyrobot.com/graphql",
+  subscription_caller: CommonGraphQLClient.Caller.WebSocket,
+  websocket_api_url: "wss://testing.dev.tinyrobot.com/graphql/websocket"
