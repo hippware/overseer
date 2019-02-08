@@ -20,7 +20,7 @@ defmodule Overseer.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:crypto, :inets, :logger],
       mod: {Overseer, []}
     ]
   end
@@ -28,26 +28,28 @@ defmodule Overseer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      #{:absinthe_websocket, "~> 0.2.0"},
-      {:absinthe_websocket, path: "/home/bernard/src/absinthe_websocket", override: true},
+      {:absinthe_websocket,
+        github: "hippware/absinthe_websocket",
+        branch: "error-handling",
+        override: true},
 
-      #{:common_graphql_client, "~> 0.3.0"},
-      {:common_graphql_client, path: "/home/bernard/src/common_graphql_client"},
+      {:common_graphql_client,
+        github: "hippware/common_graphql_client",
+        branch: "error-handling"},
 
       {:confex, "~> 3.4"},
       {:guardian, "~> 1.2.1"},
-      {:httpoison, "~> 1.1"},
+      {:httpoison, "~> 1.5"},
       {:json_web_token, "~> 0.2.10"},
       {:mogrify, "~> 0.7.0"},
-
-      {:distillery, "~> 2.0", runtime: false},
+      {:distillery, "~> 2.0", runtime: false}
     ]
   end
 
   defp aliases do
     [
       recompile: ["clean", "compile"],
-      prepare: ["deps.get", "recompile"],
+      prepare: ["deps.get", "recompile"]
     ]
   end
 end

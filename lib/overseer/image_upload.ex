@@ -5,52 +5,102 @@ defmodule Overseer.ImageUpload do
 
   alias Overseer.{Utils, WockyApi}
 
-  @image_file "data/image.jpg"
+  @image_file "data/original.jpg"
+
+  @mindim 400
+  @maxdim 3200
 
   def run() do
-    Logger.debug "Authenticating..."
+    Logger.info("Authenticating...")
     Utils.authenticate()
 
-    image = File.read!(@image_file)
+    image = get_test_image()
 
     full_task = Task.async(&make_full/0)
     thumb_task = Task.async(&make_thumb/0)
 
     # Upload
-    Logger.debug "Getting upload URL..."
-    {:ok, data} = WockyApi.get(:upload, ["test-file.jpg", byte_size(image), "image/jpeg"])
+    Logger.info("Getting upload URL...")
+
+    {:ok, data} =
+      WockyApi.get(:upload, ["test-file.jpg", byte_size(image), "image/jpeg"])
+
     result = data["result"]
     method = result["method"] |> String.downcase() |> String.to_atom()
 
-    Logger.debug "Uploading..."
-    {:ok, 200, _, _} = :hackney.request(method, result["uploadUrl"], headers(result["headers"]), image, connect_timeout: 120000, recv_timeout: 120000)
+    Logger.info("Uploading...")
+
+    %{status_code: 200} =
+      HTTPoison.request!(
+        method,
+        result["uploadUrl"],
+        image,
+        headers(result["headers"]),
+        connect_timeout: 120_000,
+        recv_timeout: 120_000
+      )
 
     # Download
-    Logger.debug "Getting download URLs..."
+    Logger.info("Getting download URLs...")
     {:ok, data} = WockyApi.get(:media_urls, [result["referenceUrl"], 120_000])
 
-    Logger.debug "Downloading thumbnail"
-    {:ok, 200, _, ref} = :hackney.request(:get, data["thumbnailUrl"])
-    {:ok, thumb} = :hackney.body(ref)
-    File.write!("data/thumb_down.jpg", thumb)
+    Logger.info("Downloading images")
 
-    Logger.debug "Downloading full size"
-    {:ok, 200, _, ref} = :hackney.request(:get, data["fullUrl"])
-    {:ok, full} = :hackney.body(ref)
-    File.write!("data/full_down.jpg", full)
+    thumb_down_task =
+      Task.async(fn -> download(data["thumbnailUrl"], "data/thumb_down.jpg") end)
 
-    Task.await(full_task)
-    Task.await(thumb_task)
+    full_down_task =
+      Task.async(fn -> download(data["fullUrl"], "data/full_down.jpg") end)
+
+    # Compare
+    Enum.each(
+      [full_task, thumb_task, thumb_down_task, full_down_task],
+      &Task.await(&1, 60_000)
+    )
+
+    Logger.info("Running comparrison")
+    {output, 0} = System.cmd("findimagedupes", ["--threshold=5", "data"])
+    Logger.info("Comparrison output: #{output}")
+
+    expected = ["full.jpg", "full_down.jpg", "thumb.jpg", "thumb_down.jpg"]
+    Enum.each(expected, fn e -> true = String.contains?(output, e) end)
+
+    Logger.info("Test complete")
   end
 
   defp headers(headerList),
-    do: Enum.map(headerList, fn %{"name" => name, "value" => val} -> {name, val} end)
+    do:
+      Enum.map(headerList, fn %{"name" => name, "value" => val} ->
+        {name, val}
+      end)
+
+  defp get_test_image() do
+    x = randdim()
+    y = randdim()
+
+    Logger.info("Downloading image #{x}x#{y}")
+
+    %{body: body, status_code: 200} =
+      HTTPoison.get!("https://picsum.photos/#{x}/#{y}", [],
+        follow_redirect: true
+      )
+
+    File.write!(@image_file, body)
+    body
+  end
+
+  defp download(url, filename) do
+    %{body: body, status_code: 200} = HTTPoison.get!(url)
+    File.write!(filename, body)
+  end
+
+  defp randdim(), do: :rand.uniform(@maxdim - @mindim) + @mindim
 
   defp make_full() do
     @image_file
     |> open()
     |> custom("strip")
-    |> resize("1920x1920^")
+    |> resize("1920x1920>")
     |> save(path: "data/full.jpg")
   end
 

@@ -3,6 +3,7 @@ defmodule Overseer.Utils do
 
   def jwt do
     phone_number = "+15556667777"
+
     claims = %{
       typ: "bypass",
       dvc: "overseer",
