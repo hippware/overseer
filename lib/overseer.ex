@@ -12,7 +12,7 @@ defmodule Overseer do
 
     Supervisor.start_link(
       [
-        Overseer.Client.supervisor()
+        Overseer.Client.supervisor(async: true)
       ],
       strategy: :one_for_one,
       name: Overseer.Supervisor
@@ -20,22 +20,25 @@ defmodule Overseer do
   end
 
   def run_op(argv) do
+    Application.ensure_all_started(:overseer)
+    Process.sleep(2000)
+
     Logger.info("Overseer arguments: #{inspect(argv)}")
 
-    case argv do
-      [] -> help()
+    r = case argv do
+      [] -> Logger.error "Operation must be supplied"
       [module | args] -> run_op(module, args)
     end
-  end
 
-  defp help() do
-    IO.inspect("""
-    TODO Help goes here.
-    """)
+    case r do
+      :ok -> 0
+      _ -> 1
+    end
+    |> :init.stop()
   end
 
   def run_op(module, args) do
-    module = Module.concat([Overseer, module])
+    module = Module.concat([Overseer.Op, module])
 
     with {:module, _} <- Code.ensure_loaded(module),
          true <- Kernel.function_exported?(module, :run, length(args)) do

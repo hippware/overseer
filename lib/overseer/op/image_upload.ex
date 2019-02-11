@@ -1,4 +1,4 @@
-defmodule Overseer.ImageUpload do
+defmodule Overseer.Op.ImageUpload do
   import Mogrify
 
   require Logger

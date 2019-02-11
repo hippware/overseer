@@ -4,9 +4,10 @@ FROM alpine:3.8
 # is updated with the current date. It will force refresh of all
 # of the base images and things like `apt-get update` won't be using
 # old cached versions when the Dockerfile is built.
-ENV REFRESHED_AT=2019-02-08 \
+ENV REFRESHED_AT=2019-02-11 \
     LANG=en_US.UTF-8 \
     HOME=/opt/app \
+    PATH=/opt/app/go/bin:${PATH} \
     SHELL=/bin/sh \
     # Set this so that CTRL+G works properly \
     TERM=xterm \
@@ -48,6 +49,7 @@ RUN CGO_CPPFLAGS=-D__GLIBC__ go get -u gitlab.com/opennota/findimagedupes
 
 USER default
 WORKDIR /opt/app
+
 
 # Define mount points.
 VOLUME ["/opt/app/var/log"]

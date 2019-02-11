@@ -1,0 +1,31 @@
+overseer-build:
+  build:
+    context: .
+    dockerfile: Dockerfile.build
+    image: hippware/overseer:build
+  cached: true
+  volumes:
+    - ./tmp/artifacts:/artifacts
+overseer-rel:
+  build:
+    context: .
+    dockerfile: Dockerfile.release
+    image: 773488857071.dkr.ecr.us-west-2.amazonaws.com/hippware/overseer:latest
+    args:
+      RELEASE_NAME: overseer
+  cached: true
+aws-dockercfg:
+  image: codeship/aws-ecr-dockercfg-generator
+  add_docker: true
+  encrypted_env_file: codeship/aws.env.encrypted
+dockerlint:
+  image: redcoolbeans/dockerlint
+  volumes:
+    - ./Dockerfile.build:/Dockerfile.build
+    - ./Dockerfile.release:/Dockerfile.release
+eks-deploy:
+  image: 773488857071.dkr.ecr.us-west-2.amazonaws.com/hippware/eks-deploy:latest
+  encrypted_env_file: codeship/aws.env.encrypted
+  volumes:
+    - k8s:/k8s
+    - overseer-deploy:/overseer-deploy

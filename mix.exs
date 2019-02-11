@@ -30,12 +30,12 @@ defmodule Overseer.MixProject do
     [
       {:absinthe_websocket,
         github: "hippware/absinthe_websocket",
-        branch: "error-handling",
+        branch: "optional-async",
         override: true},
 
       {:common_graphql_client,
         github: "hippware/common_graphql_client",
-        branch: "error-handling"},
+        branch: "optional-async"},
 
       {:confex, "~> 3.4"},
       {:guardian, "~> 1.2.1"},

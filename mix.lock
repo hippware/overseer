@@ -1,9 +1,9 @@
 %{
-  "absinthe_websocket": {:git, "https://github.com/hippware/absinthe_websocket.git", "c8597f972abb362af272cc3b71c99e6bd140893f", [branch: "error-handling"]},
+  "absinthe_websocket": {:git, "https://github.com/hippware/absinthe_websocket.git", "2f15bd20430a7187255b27e268587d5abd2a4dbc", [branch: "optional-async"]},
   "artificery": {:hex, :artificery, "0.4.0", "e0b8d3eb9dfe8f42c08a620f90a2aa9cef5dba9fcdfcecad5c2be451df159a77", [:mix], [], "hexpm"},
   "base64url": {:hex, :base64url, "0.0.1", "36a90125f5948e3afd7be97662a1504b934dd5dac78451ca6e9abf85a10286be", [:rebar], [], "hexpm"},
   "certifi": {:hex, :certifi, "2.4.2", "75424ff0f3baaccfd34b1214184b6ef616d89e420b258bb0a5ea7d7bc628f7f0", [:rebar3], [{:parse_trans, "~>3.3", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm"},
-  "common_graphql_client": {:git, "https://github.com/hippware/common_graphql_client.git", "ef79c4e67c1709a465a6f8ea25d10f37ebf50067", [branch: "error-handling"]},
+  "common_graphql_client": {:git, "https://github.com/hippware/common_graphql_client.git", "45b16ff1f95183cc985aaf4a293140c69c3d463a", [branch: "optional-async"]},
   "confex": {:hex, :confex, "3.4.0", "8b1c3cc7a93320291abb31223a178df19d7f722ee816c05a8070c8c9a054560d", [:mix], [], "hexpm"},
   "decimal": {:hex, :decimal, "1.6.0", "bfd84d90ff966e1f5d4370bdd3943432d8f65f07d3bab48001aebd7030590dcc", [:mix], [], "hexpm"},
   "distillery": {:hex, :distillery, "2.0.12", "6e78fe042df82610ac3fa50bd7d2d8190ad287d120d3cd1682d83a44e8b34dfb", [:mix], [{:artificery, "~> 0.2", [hex: :artificery, repo: "hexpm", optional: false]}], "hexpm"},
