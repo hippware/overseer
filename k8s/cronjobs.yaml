@@ -20,7 +20,7 @@ spec:
             - name: overseer
               image: 773488857071.dkr.ecr.us-west-2.amazonaws.com/hippware/overseer:latest
               imagePullPolicy: Always
-              args: ["run_op", "ImageUpload"]
+              args: ["bin/overseer", "run_op", "ImageUpload"]
               envFrom:
                 - secretRef:
                     name: overseer-secrets
