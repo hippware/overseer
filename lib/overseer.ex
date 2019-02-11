@@ -14,7 +14,7 @@ defmodule Overseer do
 
     Supervisor.start_link(
       [
-        Client.supervisor(async: true)
+        Client.supervisor(async: false)
       ],
       strategy: :one_for_one,
       name: Overseer.Supervisor
