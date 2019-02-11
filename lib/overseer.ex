@@ -8,7 +8,7 @@ defmodule Overseer do
   use Application
 
   def start(_type, _args) do
-    Logger.info("STARTING")
+    Logger.info("Starting Overseer")
 
     Supervisor.start_link(
       [
@@ -21,7 +21,6 @@ defmodule Overseer do
 
   def run_op(argv) do
     Application.ensure_all_started(:overseer)
-    Process.sleep(2000)
 
     Logger.info("Overseer arguments: #{inspect(argv)}")
 
