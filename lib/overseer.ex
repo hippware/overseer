@@ -7,12 +7,14 @@ defmodule Overseer do
 
   use Application
 
+  alias Overseer.{Client, Incident, Op}
+
   def start(_type, _args) do
     Logger.info("Starting Overseer")
 
     Supervisor.start_link(
       [
-        Overseer.Client.supervisor(async: true)
+        Client.supervisor(async: true)
       ],
       strategy: :one_for_one,
       name: Overseer.Supervisor
@@ -24,42 +26,47 @@ defmodule Overseer do
 
     Logger.info("Overseer arguments: #{inspect(argv)}")
 
-    r = case argv do
-      [] -> Logger.error "Operation must be supplied"
-      [module | args] -> run_op(module, args)
-    end
-
-    case r do
-      :ok -> 0
-      _ -> 1
-    end
+    argv
+    |> do_run_op()
+    |> get_exit_status()
     |> :init.stop()
   end
 
-  def run_op(module, args) do
-    module = Module.concat([Overseer.Op, module])
+  def do_run_op([]), do: Logger.error("Operation must be supplied")
+
+  def do_run_op([module | args]) do
+    module = Module.concat([Op, module])
 
     with {:module, _} <- Code.ensure_loaded(module),
          true <- Kernel.function_exported?(module, :run, length(args)) do
-      do_run_op(module, args)
+      run_module_op(module, args)
     else
       _ ->
-        IO.inspect("""
+        Logger.error("""
         Could not find #{inspect(module)}.run/#{inspect(length(args))}
         """)
     end
   end
 
-  def do_run_op(module, args) do
+  def run_module_op(module, args) do
     try do
       apply(module, :run, args)
     catch
       t, e ->
-        Logger.error("""
+        text = """
         Test failed: #{inspect(module)} / #{inspect(args)}
         Error: #{inspect(t)}:#{inspect(e)}"
         Stacktrace: #{inspect(__STACKTRACE__)}
-        """)
+        """
+
+        Logger.error(text)
+
+        Incident.create(module, text)
+
+        :fail
     end
   end
+
+  defp get_exit_status(:ok), do: 0
+  defp get_exit_status(_), do: 1
 end
