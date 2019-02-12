@@ -28,7 +28,7 @@ defmodule Overseer.Op.SMSInvite do
 
     receive do
       :sms_received -> :ok
-      after 10_000 -> :sms_not_received
+      after 10_000 -> throw(:sms_not_received)
     end
   end
 
