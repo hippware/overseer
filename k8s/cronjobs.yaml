@@ -25,3 +25,29 @@ spec:
                 - secretRef:
                     name: overseer-secrets
 ---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sms-invite-test
+  namespace: overseer
+  labels:
+    app: overseer
+spec:
+  schedule: "10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: overseer
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: overseer
+              image: 773488857071.dkr.ecr.us-west-2.amazonaws.com/hippware/overseer:latest
+              imagePullPolicy: Always
+              args: ["bin/overseer", "run_op", "SMSInvite"]
+              envFrom:
+                - secretRef:
+                    name: overseer-secrets
+---
