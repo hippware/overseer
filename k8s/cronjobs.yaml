@@ -19,6 +19,9 @@ spec:
           containers:
             - name: overseer
               image: 773488857071.dkr.ecr.us-west-2.amazonaws.com/hippware/overseer:latest
+              ports:
+                - containerPort: 8080
+                  name: webhook
               imagePullPolicy: Always
               args: ["bin/overseer", "run_op", "ImageUpload"]
               envFrom:
