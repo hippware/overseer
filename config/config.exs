@@ -10,7 +10,9 @@ config :overseer,
   pagerduty_user:
     {:system, :string, "OVERSEER_PAGERDUTY_USER", "bernard@hippware.com"},
   enable_pagerduty: false,
-  sms_recipient: "+13076962511"
+  sms_recipient: "+13076962511",
+  twilio_auth_token: {:system, :string, "OVERSEER_TWILIO_AUTH_TOKEN"},
+  webhook_url: "https://overseer.dev.tinyrobot.com/sms"
 
 config :overseer, Overseer.WockyApi,
   client: Overseer.Client,

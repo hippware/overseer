@@ -1,6 +1,7 @@
 defmodule Overseer.Op.SMSInvite do
   require Logger
 
+  alias ExTwilio.RequestValidator
   alias Overseer.{Utils, WockyApi}
 
   def run do
@@ -28,7 +29,8 @@ defmodule Overseer.Op.SMSInvite do
 
     receive do
       :sms_received -> :ok
-      after 30_000 -> throw(:sms_not_received)
+    after
+      30_000 -> throw(:sms_not_received)
     end
 
     Logger.info("Test complete")
@@ -37,26 +39,45 @@ defmodule Overseer.Op.SMSInvite do
 
   ### Webhook listener
   def start_webhook_listener() do
-    dispatch = :cowboy_router.compile([
-      {:_, [{"/sms", __MODULE__, self()}]}
-    ])
-    {:ok, _} = :cowboy.start_clear(:sms_webhook_listener,
-      [{:port, 8080}],
-      %{env: %{dispatch: dispatch}}
-    )
+    dispatch =
+      :cowboy_router.compile([
+        {:_, [{"/sms", __MODULE__, self()}]}
+      ])
+
+    {:ok, _} =
+      :cowboy.start_clear(
+        :sms_webhook_listener,
+        [{:port, 8080}],
+        %{env: %{dispatch: dispatch}}
+      )
 
     # Give the ELBs time to pick up the server
     Process.sleep(30_000)
   end
 
   def init(req, state) do
-    req = :cowboy_req.reply(200, req)
-    Logger.info "Got request #{inspect req}"
+    Logger.info("Validating request...")
 
-    {:ok, body, req} = :cowboy_req.read_body(req)
-    Logger.info "Got body #{inspect body}"
+    params =
+      req
+      |> :cowboy_req.parse_qs()
+      |> Enum.into(%{})
 
-    send(state, :sms_received)
+    signature = :cowboy_req.header("x-twilio-signature", req)
+    url = Confex.get_env(:overseer, :webhook_url)
+    auth_token = Confex.get_env(:overseer, :twilio_auth_token)
+
+    req =
+      if RequestValidator.valid?(url, params, signature, auth_token) do
+        Logger.info("Got SMS body: #{params["Body"]}")
+
+        send(state, :sms_received)
+        :cowboy_req.reply(200, req)
+      else
+        Logger.info("Got unexpected request: #{inspect(req)}")
+        req
+      end
+
     {:ok, req, state}
   end
 end

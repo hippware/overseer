@@ -29,14 +29,12 @@ defmodule Overseer.MixProject do
   defp deps do
     [
       {:absinthe_websocket,
-       github: "annkissam/absinthe_websocket",
-       branch: "master",
-       override: true},
+       github: "annkissam/absinthe_websocket", branch: "master", override: true},
       {:common_graphql_client,
-       github: "annkissam/common_graphql_client",
-       branch: "master"},
+       github: "annkissam/common_graphql_client", branch: "master"},
       {:confex, "~> 3.4"},
       {:cowboy, "~> 2.6"},
+      {:ex_twilio, "~> 0.7.0"},
       {:guardian, "~> 1.2.1"},
       {:httpoison, "~> 1.5"},
       {:json_web_token, "~> 0.2.10"},
