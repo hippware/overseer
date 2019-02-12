@@ -16,8 +16,9 @@ defmodule Overseer.Op.ImageUpload do
 
     image = get_test_image()
 
-    full_task = Task.async(&make_full/0)
-    thumb_task = Task.async(&make_thumb/0)
+    Logger.info("Creating comparrison images...")
+    make_full()
+    make_thumb()
 
     # Upload
     Logger.info("Getting upload URL...")
@@ -44,20 +45,13 @@ defmodule Overseer.Op.ImageUpload do
     Logger.info("Getting download URLs...")
     {:ok, data} = WockyApi.get(:media_urls, [result["referenceUrl"], 120_000])
 
-    Logger.info("Downloading images")
+    Logger.info("Downloading thumbnail")
+    download(data["thumbnailUrl"], "data/thumb_down.jpg")
 
-    thumb_down_task =
-      Task.async(fn -> download(data["thumbnailUrl"], "data/thumb_down.jpg") end)
-
-    full_down_task =
-      Task.async(fn -> download(data["fullUrl"], "data/full_down.jpg") end)
+    Logger.info("Downloading full image")
+    download(data["fullUrl"], "data/full_down.jpg")
 
     # Compare
-    Enum.each(
-      [full_task, thumb_task, thumb_down_task, full_down_task],
-      &Task.await(&1, 60_000)
-    )
-
     Logger.info("Running comparrison")
     {output, 0} = System.cmd("findimagedupes", ["--threshold=5", "data"])
     Logger.info("Comparrison output: #{output}")
