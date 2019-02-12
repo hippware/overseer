@@ -50,7 +50,7 @@ defmodule Overseer.Op.SMSInvite do
   end
 
   def init(req, state) do
-    {:ok, req} = :cowboy_req.reply(200, req)
+    req = :cowboy_req.reply(200, req)
     Logger.info "Got request #{inspect req}"
 
     {:ok, body, req} = :cowboy_req.read_body(req)
