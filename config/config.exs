@@ -9,7 +9,8 @@ config :overseer,
     {:system, :string, "OVERSEER_PAGERDUTY_SERVICE", "PB5DTCR"},
   pagerduty_user:
     {:system, :string, "OVERSEER_PAGERDUTY_USER", "bernard@hippware.com"},
-  enable_pagerduty: false
+  enable_pagerduty: false,
+  sms_recipient: "+13076962511"
 
 config :overseer, Overseer.WockyApi,
   client: Overseer.Client,

@@ -32,4 +32,13 @@ defmodule Overseer.Client do
       timeout: timeout
     )
   end
+
+  defp handle(:get, :bulk_invitation, [phoneNumbers]) do
+    do_post(
+      :friendBulkInvite,
+      nil,
+      Query.BulkUser.bulk_invitation(),
+      %{phoneNumbers: phoneNumbers}
+    )
+  end
 end
