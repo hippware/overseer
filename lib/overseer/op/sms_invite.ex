@@ -58,11 +58,8 @@ defmodule Overseer.Op.SMSInvite do
   def init(req, state) do
     Logger.info("Validating request...")
 
-    params =
-      req
-      |> :cowboy_req.parse_qs()
-      |> Enum.into(%{})
-
+    {:ok, params, req} = :cowboy_req.read_urlencoded_body(req)
+    params = Enum.into(params, %{})
     Logger.info("Got params: #{inspect params}")
 
     signature = :cowboy_req.header("x-twilio-signature", req)
