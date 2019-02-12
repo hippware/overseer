@@ -28,7 +28,9 @@ defmodule Overseer.Op.SMSInvite do
     } = data
 
     receive do
-      :sms_received -> :ok
+      {:sms_received, body} ->
+        true = body =~ "has invited you to tinyrobot. Please visit https://"
+        :ok
     after
       30_000 -> throw(:sms_not_received)
     end
@@ -64,16 +66,15 @@ defmodule Overseer.Op.SMSInvite do
 
     signature = :cowboy_req.header("x-twilio-signature", req)
     Logger.info("Got signature: #{inspect signature}")
+
     url = Confex.get_env(:overseer, :webhook_url)
-    Logger.info("Got url: #{inspect url}")
     auth_token = Confex.get_env(:overseer, :twilio_auth_token)
-    Logger.info("Auth token is_nil: #{is_nil(auth_token)}")
 
     req =
       if RequestValidator.valid?(url, params, signature, auth_token) do
         Logger.info("Got SMS body: #{params["Body"]}")
 
-        send(state, :sms_received)
+        send(state, {:sms_received, params["Body"]})
         :cowboy_req.reply(200, req)
       else
         Logger.info("Ignoring invalid request: #{inspect(req)}")

@@ -34,7 +34,6 @@ metadata:
     app: overseer
 spec:
   schedule: "10 * * * *"
-  suspend: true
   jobTemplate:
     spec:
       template:
