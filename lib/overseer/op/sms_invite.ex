@@ -70,7 +70,7 @@ defmodule Overseer.Op.SMSInvite do
     url = Confex.get_env(:overseer, :webhook_url)
     Logger.info("Got url: #{inspect url}")
     auth_token = Confex.get_env(:overseer, :twilio_auth_token)
-    Logger.info("Auth token is_nil: #{is_nil(auth_token)}"
+    Logger.info("Auth token is_nil: #{is_nil(auth_token)}")
 
     req =
       if RequestValidator.valid?(url, params, signature, auth_token) do
