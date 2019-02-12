@@ -30,6 +30,9 @@ defmodule Overseer.Op.SMSInvite do
       :sms_received -> :ok
       #after 10_000 -> throw(:sms_not_received)
     end
+
+    Logger.info("Test complete")
+    :ok
   end
 
   ### Webhook listener
@@ -41,6 +44,9 @@ defmodule Overseer.Op.SMSInvite do
       [{:port, 8080}],
       %{env: %{dispatch: dispatch}}
     )
+
+    # Give the ELBs time to pick up the server
+    Process.sleep(30_000)
   end
 
   def init(req, state) do
