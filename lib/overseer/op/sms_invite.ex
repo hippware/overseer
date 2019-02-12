@@ -63,9 +63,14 @@ defmodule Overseer.Op.SMSInvite do
       |> :cowboy_req.parse_qs()
       |> Enum.into(%{})
 
+    Logger.info("Got params: #{inspect params}")
+
     signature = :cowboy_req.header("x-twilio-signature", req)
+    Logger.info("Got signature: #{inspect signature}")
     url = Confex.get_env(:overseer, :webhook_url)
+    Logger.info("Got url: #{inspect url}")
     auth_token = Confex.get_env(:overseer, :twilio_auth_token)
+    Logger.info("Auth token is_nil: #{is_nil(auth_token)}"
 
     req =
       if RequestValidator.valid?(url, params, signature, auth_token) do
@@ -74,7 +79,7 @@ defmodule Overseer.Op.SMSInvite do
         send(state, :sms_received)
         :cowboy_req.reply(200, req)
       else
-        Logger.info("Got unexpected request: #{inspect(req)}")
+        Logger.info("Ignoring invalid request: #{inspect(req)}")
         req
       end
 
