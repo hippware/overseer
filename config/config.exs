@@ -16,6 +16,6 @@ config :overseer, Overseer.WockyApi,
   client: Overseer.Client,
   query_caller: CommonGraphQLClient.Caller.WebSocket,
   subscription_caller: CommonGraphQLClient.Caller.WebSocket,
-  websocket_api_url: "wss://testing.dev.tinyrobot.com/graphql/websocket"
+  websocket_api_url: "wss://next.dev.tinyrobot.com/graphql/websocket"
 
 import_config "#{Mix.env()}.exs"
