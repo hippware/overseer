@@ -28,7 +28,7 @@ defmodule Overseer.Op.SMSInvite do
 
     receive do
       :sms_received -> :ok
-      #after 10_000 -> throw(:sms_not_received)
+      after 30_000 -> throw(:sms_not_received)
     end
 
     Logger.info("Test complete")
@@ -50,8 +50,11 @@ defmodule Overseer.Op.SMSInvite do
   end
 
   def init(req, state) do
-    :cowboy_req.reply(200, req)
+    {:ok, req} = :cowboy_req.reply(200, req)
     Logger.info "Got request #{inspect req}"
+
+    {:ok, req} = :cowboy_req.body(req)
+    Logger.info "Got body #{inspect body}"
 
     send(state, :sms_received)
     {:ok, req, state}
