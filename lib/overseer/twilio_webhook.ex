@@ -39,6 +39,10 @@ defmodule Overseer.TwilioWebhook do
         Logger.info("Got SMS body: #{params["Body"]}")
         req = :cowboy_req.reply(204, req)
 
+        # Give the request time to propagate out before we continue (and
+        # probably shut down)
+        Process.sleep(3_000)
+
         send(state, {:sms_received, params["Body"]})
         req
       else
