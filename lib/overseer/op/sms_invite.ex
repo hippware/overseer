@@ -30,7 +30,7 @@ defmodule Overseer.Op.SMSInvite do
         true = body =~ "has invited you to tinyrobot. Please visit https://"
         :ok
     after
-      30_000 -> throw(:sms_not_received)
+      60_000 -> throw(:sms_not_received)
     end
 
     Logger.info("Test complete")
