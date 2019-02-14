@@ -2,7 +2,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: imageupload-test
+  name: image-upload-test
   namespace: overseer
   labels:
     app: overseer
