@@ -50,7 +50,6 @@ RUN CGO_CPPFLAGS=-D__GLIBC__ go get -u gitlab.com/opennota/findimagedupes
 USER default
 WORKDIR /opt/app
 
-
 # Define mount points.
 VOLUME ["/opt/app/var/log"]
 

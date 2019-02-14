@@ -74,10 +74,22 @@ defmodule Overseer.Op.ImageUpload do
 
     Logger.info("Downloading image #{x}x#{y}")
 
-    %{body: body, status_code: 200} =
-      HTTPoison.get!("https://picsum.photos/#{x}/#{y}", [],
+    result =
+      HTTPoison.get("https://picsum.photos/#{x}/#{y}", [],
         follow_redirect: true
       )
+
+    body = case result do
+      {:ok, %{body: body, status_code: 200}} ->
+        body
+      r ->
+        Logger.warn(
+          """
+          Could not download test image; using fallback. Result: #{inspect r}
+          """)
+        fallback_file()
+        |> File.read!()
+    end
 
     File.write!(@image_file, body)
     body
@@ -106,5 +118,12 @@ defmodule Overseer.Op.ImageUpload do
     |> gravity("center")
     |> extent("360x360")
     |> save(path: "data/thumb.jpg")
+  end
+
+  defp fallback_file do
+    :overseer
+    |> :code.priv_dir()
+    |> to_string()
+    |> Path.join("fallback.jpg")
   end
 end
