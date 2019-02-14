@@ -37,14 +37,12 @@ defmodule Overseer.TwilioWebhook do
     req =
       if RequestValidator.valid?(url, params, signature, auth_token) do
         Logger.info("Got SMS body: #{params["Body"]}")
-        req = :cowboy_req.reply(204, req)
 
         # Give the request time to propagate out before we continue (and
         # probably shut down)
-        Process.sleep(3_000)
+        :timer.send_after(3_000, state, {:sms_received, params["Body"]})
 
-        send(state, {:sms_received, params["Body"]})
-        req
+        :cowboy_req.reply(204, req)
       else
         Logger.info("Ignoring invalid request: #{inspect(req)}")
         req
