@@ -10,11 +10,11 @@ defmodule Overseer.Op.ImageUpload do
   @mindim 400
   @maxdim 3200
 
-  def run() do
+  def run(x \\ nil, y \\ nil) do
     Logger.info("Authenticating...")
     Utils.authenticate()
 
-    image = get_test_image()
+    image = get_test_image(x, y)
 
     Logger.info("Creating comparrison images...")
     make_full()
@@ -53,7 +53,7 @@ defmodule Overseer.Op.ImageUpload do
 
     # Compare
     Logger.info("Running comparrison")
-    {output, 0} = System.cmd("findimagedupes", ["--threshold=5", "data"])
+    {output, 0} = System.cmd("findimagedupes", ["--threshold=6", "data"])
     Logger.info("Comparrison output: #{output}")
 
     expected = ["full.jpg", "full_down.jpg", "thumb.jpg", "thumb_down.jpg"]
@@ -68,9 +68,9 @@ defmodule Overseer.Op.ImageUpload do
         {name, val}
       end)
 
-  defp get_test_image() do
-    x = randdim()
-    y = randdim()
+  defp get_test_image(x, y) do
+    x = x || randdim()
+    y = y || randdim()
 
     Logger.info("Downloading image #{x}x#{y}")
 
