@@ -1,5 +1,5 @@
 %{
-  "absinthe_websocket": {:git, "https://github.com/annkissam/absinthe_websocket.git", "e595832a89cd02fa8fdab74a38f3721dec6dbe78", [branch: "master"]},
+  "absinthe_websocket": {:git, "https://github.com/annkissam/absinthe_websocket.git", "9caf27b2efd2d2344db6fa73feafb4394cef3623", [branch: "master"]},
   "artificery": {:hex, :artificery, "0.4.0", "e0b8d3eb9dfe8f42c08a620f90a2aa9cef5dba9fcdfcecad5c2be451df159a77", [:mix], [], "hexpm"},
   "base64url": {:hex, :base64url, "0.0.1", "36a90125f5948e3afd7be97662a1504b934dd5dac78451ca6e9abf85a10286be", [:rebar], [], "hexpm"},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm"},
