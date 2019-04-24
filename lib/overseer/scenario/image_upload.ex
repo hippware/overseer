@@ -1,70 +1,84 @@
-defmodule Overseer.Op.ImageUpload do
+defmodule Overseer.Scenario.ImageUpload do
+  @moduledoc "Test scenario for image uploads"
+
   import Mogrify
 
-  require Logger
+  use Overseer.Chaperon.Scenario
 
-  alias Overseer.{Utils, WockyApi}
+  alias Overseer.Query.Media
+  alias Overseer.Utils
 
   @image_file "data/original.jpg"
 
   @mindim 400
   @maxdim 3200
 
-  def run(x \\ nil, y \\ nil) do
-    Logger.info("Authenticating...")
-    Utils.authenticate()
+  def init(session), do: {:ok, session}
+
+  def run(session!) do
+    [x, y] = session!.config.args
+
+    session! = Utils.authenticate(session!)
 
     image = get_test_image(x, y)
 
-    Logger.info("Creating comparrison images...")
     make_full()
     make_thumb()
 
     # Upload
-    Logger.info("Getting upload URL...")
+    session! =
+      session!
+      |> log_info("Getting upload URL")
+      |> aws_send(Media.upload("test-file.jpg", byte_size(image), "image/jpeg"))
+      |> aws_recv()
 
-    {:ok, data} =
-      WockyApi.get(:upload, ["test-file.jpg", byte_size(image), "image/jpeg"])
+    result = get_last(session!).payload.response.data.mediaUpload.result
+    method = result.method |> String.downcase() |> String.to_atom()
 
-    result = data["result"]
-    method = result["method"] |> String.downcase() |> String.to_atom()
-
-    Logger.info("Uploading...")
+    session! = log_info(session!, "Uploading...")
 
     %{status_code: 200} =
       HTTPoison.request!(
         method,
-        result["uploadUrl"],
+        result.uploadUrl,
         image,
-        headers(result["headers"]),
+        headers(result.headers),
         connect_timeout: 120_000,
         recv_timeout: 120_000
       )
 
     # Download
-    Logger.info("Getting download URLs...")
-    {:ok, data} = WockyApi.get(:media_urls, [result["referenceUrl"], 120_000])
+    session! =
+      session!
+      |> log_info("Getting download URLs...")
+      |> aws_send(Media.media_urls(result.referenceUrl, 120_000))
+      |> aws_recv()
 
-    Logger.info("Downloading thumbnail")
-    download(data["thumbnailUrl"], "data/thumb_down.jpg")
+    urls = get_last(session!).payload.response.data.mediaUrls
 
-    Logger.info("Downloading full image")
-    download(data["fullUrl"], "data/full_down.jpg")
+
+    session! = log_info(session!, "Downloading thumbnail")
+    download(urls.thumbnailUrl, "data/thumb_down.jpg")
+
+    session! = log_info(session!, "Downloading full image")
+    download(urls.fullUrl, "data/full_down.jpg")
 
     # Compare
-    Logger.info("Running comparrison")
-    {output, 0} = System.cmd("findimagedupes", ["--threshold=6", "data"])
-    Logger.info("Comparrison output: #{output}")
+    session! = log_info(session!, "Running comparrison")
+    {output, 0} = System.cmd("findimagedupes", ["--threshold=5", "data"])
+    session! = log_info(session!, "Comparrison output: #{output}")
 
     expected = ["full.jpg", "full_down.jpg", "thumb.jpg", "thumb_down.jpg"]
     Enum.each(expected, fn e -> true = String.contains?(output, e) end)
 
-    Logger.info("Test complete")
+    session!
+    |> log_info("Test complete")
+    |> aws_close()
   end
 
   defp headers(headerList),
     do:
-      Enum.map(headerList, fn %{"name" => name, "value" => val} ->
+      Enum.map(headerList, fn %{name: name, value: val} ->
         {name, val}
       end)
 

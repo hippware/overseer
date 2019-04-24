@@ -1,5 +1,8 @@
 defmodule Overseer.Utils do
-  alias Overseer.{JWT, WockyApi}
+  alias Overseer.JWT
+  alias Overseer.Query.Auth
+
+  use Overseer.Chaperon.Scenario
 
   def jwt do
     phone_number = "+15556667777"
@@ -15,8 +18,12 @@ defmodule Overseer.Utils do
     token
   end
 
-  def authenticate do
-    {:ok, %{"user" => %{"id" => id}}} = WockyApi.get(:auth, jwt())
-    id
+  def authenticate(session) do
+    session
+    |> log_info("Connecting")
+    |> aws_connect(Confex.get_env(:overseer, :websocket_path, "/"))
+    |> log_info("Sending auth")
+    |> aws_send(Auth.auth(jwt()))
+    |> aws_recv()
   end
 end

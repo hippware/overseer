@@ -12,12 +12,8 @@ config :overseer,
   enable_pagerduty: false,
   sms_recipient: "+13076962511",
   twilio_auth_token: {:system, :string, "OVERSEER_TWILIO_AUTH_TOKEN"},
-  webhook_url: "https://overseer.dev.tinyrobot.com/sms"
-
-config :overseer, Overseer.WockyApi,
-  client: Overseer.Client,
-  query_caller: CommonGraphQLClient.Caller.WebSocket,
-  subscription_caller: CommonGraphQLClient.Caller.WebSocket,
-  websocket_api_url: "wss://next.dev.tinyrobot.com/graphql/websocket"
+  webhook_url: "https://overseer.dev.tinyrobot.com/sms",
+  websocket_base_url: "wss://next.dev.tinyrobot.com/",
+  websocket_path: "graphql/websocket"
 
 import_config "#{Mix.env()}.exs"

@@ -28,15 +28,12 @@ defmodule Overseer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:absinthe_websocket,
-       github: "annkissam/absinthe_websocket", branch: "master", override: true},
-      {:common_graphql_client,
-       github: "annkissam/common_graphql_client", branch: "master"},
+      {:chaperon, "~> 0.2.3"},
       {:confex, "~> 3.4"},
       {:cowboy, "~> 2.6"},
       {:ex_twilio, "~> 0.7.0"},
       {:guardian, "~> 1.2.1"},
-      {:httpoison, "~> 1.5"},
+      {:httpoison, "~> 1.5", override: true},
       {:json_web_token, "~> 0.2.10"},
       {:mixduty, "~> 0.1.0"},
       {:mogrify, "~> 0.7.0"},
