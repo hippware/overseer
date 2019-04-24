@@ -1,4 +1,6 @@
 defmodule Overseer.Query.Auth do
+  @moduledoc "Auth-related GraphQL queries"
+
   def auth(token) do
     {
       """
@@ -11,6 +13,19 @@ defmodule Overseer.Query.Auth do
       }
       """,
       %{token: token}
+    }
+  end
+
+  def mark_transient do
+    {
+      """
+      mutation {
+        userUpdate (input: {values: {transient: true}}) {
+          successful
+        }
+      }
+      """,
+      %{}
     }
   end
 end

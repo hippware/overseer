@@ -6,7 +6,7 @@ defmodule Overseer.Scenario.ImageUpload do
   use Overseer.Chaperon.Scenario
 
   alias Overseer.Query.Media
-  alias Overseer.Utils
+  alias Overseer.Scenario.Utils
 
   @image_file "data/original.jpg"
 
@@ -56,7 +56,6 @@ defmodule Overseer.Scenario.ImageUpload do
 
     urls = get_last(session!).payload.response.data.mediaUrls
 
-
     session! = log_info(session!, "Downloading thumbnail")
     download(urls.thumbnailUrl, "data/thumb_down.jpg")
 
@@ -89,21 +88,21 @@ defmodule Overseer.Scenario.ImageUpload do
     Logger.info("Downloading image #{x}x#{y}")
 
     result =
-      HTTPoison.get("https://picsum.photos/#{x}/#{y}", [],
-        follow_redirect: true
-      )
+      HTTPoison.get("https://picsum.photos/#{x}/#{y}", [], follow_redirect: true)
 
-    body = case result do
-      {:ok, %{body: body, status_code: 200}} ->
-        body
-      r ->
-        Logger.warn(
-          """
-          Could not download test image; using fallback. Result: #{inspect r}
+    body =
+      case result do
+        {:ok, %{body: body, status_code: 200}} ->
+          body
+
+        r ->
+          Logger.warn("""
+          Could not download test image; using fallback. Result: #{inspect(r)}
           """)
-        fallback_file()
-        |> File.read!()
-    end
+
+          fallback_file()
+          |> File.read!()
+      end
 
     File.write!(@image_file, body)
     body
@@ -114,9 +113,9 @@ defmodule Overseer.Scenario.ImageUpload do
     File.write!(filename, body)
   end
 
-  defp randdim(), do: :rand.uniform(@maxdim - @mindim) + @mindim
+  defp randdim, do: :rand.uniform(@maxdim - @mindim) + @mindim
 
-  defp make_full() do
+  defp make_full do
     @image_file
     |> open()
     |> custom("strip")
@@ -124,7 +123,7 @@ defmodule Overseer.Scenario.ImageUpload do
     |> save(path: "data/full.jpg")
   end
 
-  defp make_thumb() do
+  defp make_thumb do
     @image_file
     |> open()
     |> custom("strip")

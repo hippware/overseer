@@ -8,12 +8,18 @@ defmodule Overseer do
   use Application
 
   alias Chaperon.Scenario
-  alias Overseer.Incident
+  alias Overseer.{Incident, NumberBroker}
 
   def start(_type, _args) do
     Logger.info("Starting Overseer")
 
-    {:ok, self()}
+    Supervisor.start_link(
+      [
+        NumberBroker
+      ],
+      strategy: :one_for_one,
+      name: Overseer.Supervisor
+    )
   end
 
   def run_op(argv) do
@@ -30,10 +36,13 @@ defmodule Overseer do
   def do_run_op([]), do: Logger.error("Operation must be supplied")
 
   def do_run_op([module | args]) do
-    module = Module.concat([Overseer.Scenario, module])
+    module = Module.safe_concat([Overseer.Scenario, module])
+
     config = %{
       base_url: Confex.get_env(:overseer, :websocket_base_url),
-      args: args}
+      args: args
+    }
+
     try do
       Scenario.execute(module, config)
       :ok

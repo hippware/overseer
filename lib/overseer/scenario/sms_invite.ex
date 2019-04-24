@@ -3,8 +3,9 @@ defmodule Overseer.Scenario.SMSInvite do
 
   use Overseer.Chaperon.Scenario
 
-  alias Overseer.{TwilioWebhook, Utils}
   alias Overseer.Query.BulkUser
+  alias Overseer.Scenario.Utils
+  alias Overseer.TwilioWebhook
 
   def init(session), do: {:ok, session}
 

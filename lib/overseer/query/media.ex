@@ -1,4 +1,6 @@
 defmodule Overseer.Query.Media do
+  @moduledoc "Media-related GraphQL queries"
+
   def upload(filename, size, type, access \\ "all") do
     {
       """

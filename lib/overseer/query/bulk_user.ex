@@ -1,4 +1,6 @@
 defmodule Overseer.Query.BulkUser do
+  @moduledoc "Bulk-user-related GraphQL queries"
+
   def bulk_invitation(phone_numbers) do
     {
       """
