@@ -16,11 +16,9 @@ defmodule Overseer.Scenario.ImageUpload do
   def init(session), do: {:ok, session}
 
   def run(session!) do
-    [x, y] = session!.config.args
-
     session! = Utils.authenticate(session!)
 
-    image = get_test_image(x, y)
+    image = get_test_image(session!.config.args)
 
     make_full()
     make_thumb()
@@ -81,10 +79,9 @@ defmodule Overseer.Scenario.ImageUpload do
         {name, val}
       end)
 
-  defp get_test_image(x, y) do
-    x = x || randdim()
-    y = y || randdim()
+  defp get_test_image([]), do: get_test_image([randdim(), randdim()])
 
+  defp get_test_image([x, y]) do
     Logger.info("Downloading image #{x}x#{y}")
 
     result =
