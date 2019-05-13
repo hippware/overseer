@@ -1,4 +1,6 @@
 defmodule Overseer.JWT do
+  @moduledoc "JWT config for Overseer"
+
   use Guardian,
     otp_app: :overseer,
     issuer: "TinyRobot/0.0.0 (Wocky Tester)",

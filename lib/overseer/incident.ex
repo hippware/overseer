@@ -7,7 +7,7 @@ defmodule Overseer.Incident do
     if Confex.get_env(:overseer, :enable_pagerduty), do: do_create(module, data)
   end
 
-  def do_create(module, data) do
+  defp do_create(module, data) do
     client = Mixduty.Client.new(Confex.get_env(:overseer, :pagerduty_key))
 
     title = "Overseer error in #{module}"

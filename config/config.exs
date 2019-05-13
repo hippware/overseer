@@ -3,7 +3,9 @@
 use Mix.Config
 
 config :overseer,
-  jwt_key: {:system, :string, "OVERSEER_JWT_KEY"},
+  jwt_key:
+    {:system, :string, "OVERSEER_JWT_KEY",
+     "CgKG3D0OfVBMh3JiJfQGkS0SyTrBaaGfrl1MozWnjesSuhVLnMTHDwyXDC/f2dtu"},
   pagerduty_key: {:system, :string, "OVERSEER_PAGERDUTY_KEY"},
   pagerduty_service:
     {:system, :string, "OVERSEER_PAGERDUTY_SERVICE", "PB5DTCR"},
@@ -12,12 +14,14 @@ config :overseer,
   enable_pagerduty: false,
   sms_recipient: "+13076962511",
   twilio_auth_token: {:system, :string, "OVERSEER_TWILIO_AUTH_TOKEN"},
-  webhook_url: "https://overseer.dev.tinyrobot.com/sms"
+  webhook_url: "https://overseer.dev.tinyrobot.com/sms",
+  websocket_base_url: "wss://next.dev.tinyrobot.com/",
+  # websocket_base_url: "wss://testing.dev.tinyrobot.com/",
+  # websocket_base_url: "ws://localhost:4000/",
+  websocket_path: "graphql/websocket",
+  number_prefix: "+1556"
 
-config :overseer, Overseer.WockyApi,
-  client: Overseer.Client,
-  query_caller: CommonGraphQLClient.Caller.WebSocket,
-  subscription_caller: CommonGraphQLClient.Caller.WebSocket,
-  websocket_api_url: "wss://next.dev.tinyrobot.com/graphql/websocket"
+config :logger,
+  level: :info
 
 import_config "#{Mix.env()}.exs"

@@ -7,14 +7,15 @@ defmodule Overseer do
 
   use Application
 
-  alias Overseer.{Client, Incident, Op}
+  alias Chaperon.Scenario
+  alias Overseer.{Incident, NumberBroker}
 
   def start(_type, _args) do
     Logger.info("Starting Overseer")
 
     Supervisor.start_link(
       [
-        Client.supervisor(async: false)
+        NumberBroker
       ],
       strategy: :one_for_one,
       name: Overseer.Supervisor
@@ -35,22 +36,16 @@ defmodule Overseer do
   def do_run_op([]), do: Logger.error("Operation must be supplied")
 
   def do_run_op([module | args]) do
-    module = Module.concat([Op, module])
+    module = Module.safe_concat([Overseer.Scenario, module])
 
-    with {:module, _} <- Code.ensure_loaded(module),
-         true <- Kernel.function_exported?(module, :run, length(args)) do
-      run_module_op(module, args)
-    else
-      _ ->
-        Logger.error("""
-        Could not find #{inspect(module)}.run/#{inspect(length(args))}
-        """)
-    end
-  end
+    config = %{
+      base_url: Confex.get_env(:overseer, :websocket_base_url),
+      args: args
+    }
 
-  def run_module_op(module, args) do
     try do
-      apply(module, :run, args)
+      Scenario.execute(module, config)
+      :ok
     catch
       t, e ->
         text = """
