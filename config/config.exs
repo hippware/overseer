@@ -22,6 +22,6 @@ config :overseer,
   number_prefix: "+1556"
 
 config :logger,
-  level: :info
+  level: :debug
 
 import_config "#{Mix.env()}.exs"
