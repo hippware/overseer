@@ -23,15 +23,24 @@ defmodule Overseer.Scenario.SMSInvite do
       |> aws_recv()
 
     %{
-      result: [
-        %{
-          error: nil,
-          phoneNumber: ^target_number,
-          result: "EXTERNAL_INVITATION_SENT",
-          user: nil
-        }
-      ],
-      successful: true
+      payload: %{
+        response: %{
+          data: %{
+            friendBulkInvite: %{
+              result: [
+                %{
+                  error: nil,
+                  phoneNumber: ^target_number,
+                  result: "EXTERNAL_INVITATION_SENT",
+                  user: nil
+                }
+              ],
+              successful: true
+            }
+          }
+        },
+        status: "ok"
+      }
     } = get_last(session!)
 
     receive do
