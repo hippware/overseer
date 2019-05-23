@@ -36,11 +36,13 @@ defmodule Overseer.Scenario.LocationUpload do
 
     session
     |> Utils.authenticate()
+    # Pre-warm the location handler processes
+    |> aws_send(User.send_location(Address.latitude(), Address.longitude()))
+    |> aws_recv()
     |> signal_parent(:user_ready)
     |> await_signal(:go)
     |> delay({:random, 3 |> seconds})
     |> repeat_traced(:send_location, location_count)
-    |> aws_send(User.delete())
     |> aws_close()
   end
 
