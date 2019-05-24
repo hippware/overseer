@@ -30,4 +30,17 @@ defmodule Overseer.Query.User do
       }
     }
   end
+
+  def get_location_token do
+    {
+      """
+      mutation {
+        userLocationGetToken {
+          result
+        }
+      }
+      """,
+      %{}
+    }
+  end
 end
