@@ -1,5 +1,5 @@
-defmodule Overseer.LoadTest.LocationUpload do
-  @moduledoc "Config for LocationUpload test"
+defmodule Overseer.LoadTest.LocationUploadBackground do
+  @moduledoc "Config for LocationUploadBackground test"
 
   use Chaperon.LoadTest
 
@@ -7,11 +7,11 @@ defmodule Overseer.LoadTest.LocationUpload do
 
   def scenarios,
     do: [
-      {{1, Overseer.Scenario.LocationUpload},
+      {{1, Overseer.Scenario.LocationUploadBackground},
        %{
          location_upload: %{
            register_batch: 20,
-           users: 5000,
+           users: 20,
            locations: 50
          }
        }}
