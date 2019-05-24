@@ -10,7 +10,7 @@ defmodule Overseer.LoadTest.LocationUpload do
       {{1, Overseer.Scenario.LocationUpload},
        %{
          location_upload: %{
-           register_batch: 20,
+           register_batch: 40,
            users: 5000,
            locations: 50
          }

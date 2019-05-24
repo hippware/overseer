@@ -6,7 +6,7 @@ defmodule Overseer.NumberBroker do
 
   use GenServer
 
-  @total_numbers 100_000
+  @total_numbers 10_000
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
