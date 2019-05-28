@@ -40,6 +40,7 @@ defmodule Overseer.MixProject do
       {:mixduty, "~> 0.1.0"},
       {:mogrify, "~> 0.7.0"},
       {:rexbug, ">= 1.0.0"},
+      {:observer_cli, "~> 1.5"},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
       {:distillery, "~> 2.0", runtime: false}

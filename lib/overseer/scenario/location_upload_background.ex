@@ -70,7 +70,8 @@ defmodule Overseer.Scenario.LocationUploadBackground do
       [
         json: location_body(),
         headers: location_headers(session),
-        with_result: &check_result/2
+        with_result: &check_result/2,
+        metrics_url: config(session, :base_url) <> "/api/v1/users/.../locations"
       ]
 
     user = session.assigned.user_id

@@ -58,7 +58,11 @@ defmodule Overseer.Chaperon.AbsintheWebsocket do
     ws_await_recv(session, expected_message, options)
   end
 
-  def aws_close(session, options \\ []), do: ws_close(session, options)
+  def aws_close(session, options \\ []) do
+    session
+    |> update_config(interval: fn _ -> nil end)
+    |> ws_close(options)
+  end
 
   defp send_heartbeat(session) do
     msg =
