@@ -15,16 +15,20 @@ config :overseer,
   sms_recipient: "+13076962511",
   twilio_auth_token: {:system, :string, "OVERSEER_TWILIO_AUTH_TOKEN"},
   webhook_url: "https://overseer.dev.tinyrobot.com/sms",
+
   # websocket_base_url: "wss://next.dev.tinyrobot.com/",
-  # websocket_base_url: "wss://testing.dev.tinyrobot.com/",
-  websocket_base_url: "ws://localhost:4000/",
+  websocket_base_url: "wss://testing.dev.tinyrobot.com/",
+  # websocket_base_url: "ws://localhost:4000/",
+
   websocket_path: "graphql/websocket",
-
-  rest_url: "http://localhost:4000",
-
+  rest_base_url: "https://testing.dev.tinyrobot.com/",
   number_prefix: "+1556"
 
 config :logger,
   level: :info
+
+# Stop us from running out of connections for http load tests
+config :hackney,
+  use_default_pool: false
 
 import_config "#{Mix.env()}.exs"

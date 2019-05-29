@@ -29,11 +29,17 @@ defmodule Overseer.Scenario.Utils do
       |> aws_send(Auth.auth(jwt()))
       |> aws_recv()
 
-    session!
-    |> assign(
-      user_id: get_last(session!).payload.response.data.authenticate.user.id
-    )
-    |> aws_send(Auth.mark_transient())
-    |> aws_recv()
+    u = get_last(session!).payload.response.data.authenticate.user
+
+    if u do
+      session!
+      |> assign(user_id: u.id)
+      |> aws_send(Auth.mark_transient())
+      |> aws_recv()
+    else
+      session!
+      |> log_error("No user returned: #{inspect(get_last(session!))}")
+      |> error("No user")
+    end
   end
 end
