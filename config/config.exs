@@ -27,8 +27,4 @@ config :overseer,
 config :logger,
   level: :info
 
-# Stop us from running out of connections for http load tests
-config :hackney,
-  use_default_pool: false
-
 import_config "#{Mix.env()}.exs"

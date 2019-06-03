@@ -11,7 +11,7 @@ defmodule Overseer.LoadTest.LocationUploadBackground do
        %{
          location_upload: %{
            register_batch: 50,
-           users: 2000,
+           users: 5000,
            locations: 50
          }
        }}

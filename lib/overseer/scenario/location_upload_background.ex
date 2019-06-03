@@ -10,7 +10,9 @@ defmodule Overseer.Scenario.LocationUploadBackground do
   alias Overseer.Query.User
   alias Overseer.Scenario.Utils
 
-  def init(session), do: {:ok, session}
+  def init(session) do
+    {:ok, session}
+  end
 
   def run(session!) do
     batch_size = config(session!, [:location_upload, :register_batch])
@@ -46,9 +48,8 @@ defmodule Overseer.Scenario.LocationUploadBackground do
       base_url: fn _ -> Confex.get_env(:overseer, :rest_base_url) end
     )
     |> await_signal(:go)
-    |> delay({:random, 3 |> seconds})
+    |> delay({:random, 120 |> seconds})
     |> repeat(:send_location, location_count)
-    |> await(:send_location_http)
   end
 
   def get_token(session!) do
@@ -68,6 +69,7 @@ defmodule Overseer.Scenario.LocationUploadBackground do
     session
     |> async(:send_location_http)
     |> delay(3 |> seconds)
+    |> await(:send_location_http)
   end
 
   def send_location_http(session) do
@@ -75,7 +77,7 @@ defmodule Overseer.Scenario.LocationUploadBackground do
       json: location_body(),
       headers: location_headers(session),
       with_result: &check_result/2,
-      metrics_url: config(session, :base_url) <> "/api/v1/users/.../locations"
+      metrics_url: config(session, :base_url) <> "/api/v1/users/.../locations",
     ]
 
     user = session.assigned.user_id
