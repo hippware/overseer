@@ -14,7 +14,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-name: 'hippware-logs'
     service.beta.kubernetes.io/aws-load-balancer-access-log-s3-bucket-prefix: 'overseer/elb'
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: 'tcp'
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: 'arn:aws:acm:us-west-2:773488857071:certificate/0342584c-d783-4f1f-bfb1-f437c11b53e9'
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: 'arn:aws:acm:us-west-2:773488857071:certificate/6782fd9e-a0c7-4999-860a-9c97054184d0'
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: '443'
 spec:
   externalTrafficPolicy: Local
