@@ -25,6 +25,11 @@ template_dir="k8s"
 export REVISION
 export KUBECONFIG="${KUBECONFIG:-"${HOME}/.kube/config"}"
 
+cluster_conf=/tmp/cluster.tfstate.json
+aws s3 cp s3://hippware-terraform-state/cluster/terraform.tfstate ${cluster_conf}
+jq -s '[.[].outputs] | add' ${cluster_conf} > ${output_bindings}
+
 kubernetes-deploy "${namespace}" "${context}" \
   --template-dir="${template_dir}" \
+  --bindings=@${output_bindings} \
   "$@"
