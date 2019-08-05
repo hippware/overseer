@@ -34,7 +34,7 @@ defmodule Overseer.MixProject do
       {:cowboy, "~> 2.6"},
       {:ex_twilio, "~> 0.7.0"},
       {:faker, "~> 0.12"},
-      {:guardian, "~> 1.2.1"},
+      {:guardian, "~> 2.0.0"},
       {:httpoison, "~> 1.5", override: true},
       {:json_web_token, "~> 0.2.10"},
       {:mixduty, "~> 0.1.0"},
