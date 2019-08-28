@@ -62,7 +62,7 @@ defmodule Overseer.Scenario.ImageUpload do
 
     # Compare
     session! = log_info(session!, "Running comparrison")
-    {output, 0} = System.cmd("findimagedupes", ["--threshold=10", "data"])
+    {output, 0} = System.cmd("findimagedupes", ["--threshold=30", "data"])
     session! = log_info(session!, "Comparrison output: #{output}")
 
     expected = ["full.jpg", "full_down.jpg", "thumb.jpg", "thumb_down.jpg"]
