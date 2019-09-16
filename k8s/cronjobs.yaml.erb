@@ -15,7 +15,7 @@ spec:
           labels:
             app: overseer
           annotations:
-            iam.amazonaws.com/role: <%= basic_app_role_arn['value'] %>
+            iam.amazonaws.com/role: <%= overseer_app_role['value'] %>
         spec:
           restartPolicy: Never
           containers:
@@ -43,7 +43,7 @@ spec:
           labels:
             app: overseer
           annotations:
-            iam.amazonaws.com/role: <%= basic_app_role_arn['value'] %>
+            iam.amazonaws.com/role: <%= overseer_app_role['value'] %>
         spec:
           restartPolicy: Never
           containers:
