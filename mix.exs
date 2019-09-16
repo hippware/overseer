@@ -28,9 +28,8 @@ defmodule Overseer.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # TODO: Back to upstream when changes are merged
-      {:chaperon, github: "hippware/chaperon", branch: "working"},
-      {:confex, "~> 3.4"},
+      {:chaperon, "~> 0.3"},
+      {:confex_vault, github: "hippware/confex_vault", branch: "master"},
       {:cowboy, "~> 2.6"},
       {:ex_twilio, "~> 0.7.0"},
       {:faker, "~> 0.12"},

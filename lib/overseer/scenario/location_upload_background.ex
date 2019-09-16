@@ -42,7 +42,7 @@ defmodule Overseer.Scenario.LocationUploadBackground do
     |> signal_parent(:user_ready)
     |> call(:get_token)
     |> aws_close()
-    |> update_config(base_url: fn _ -> (Confex.get_env(:overseer, :rest_url)) end)
+    |> update_config(base_url: fn _ -> Confex.get_env(:overseer, :rest_url) end)
     |> await_signal(:go)
     |> delay({:random, 3 |> seconds})
     |> repeat_traced(:send_location, location_count)
@@ -56,7 +56,10 @@ defmodule Overseer.Scenario.LocationUploadBackground do
       |> aws_recv()
 
     session!
-      |> assign(location_token: get_last(session!).payload.response.data.userLocationGetToken.result)
+    |> assign(
+      location_token:
+        get_last(session!).payload.response.data.userLocationGetToken.result
+    )
   end
 
   def send_location(session) do
@@ -66,12 +69,11 @@ defmodule Overseer.Scenario.LocationUploadBackground do
   end
 
   def send_location_http(session) do
-    opts =
-      [
-        json: location_body(),
-        headers: location_headers(session),
-        with_result: &check_result/2
-      ]
+    opts = [
+      json: location_body(),
+      headers: location_headers(session),
+      with_result: &check_result/2
+    ]
 
     user = session.assigned.user_id
 
