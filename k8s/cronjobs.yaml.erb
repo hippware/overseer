@@ -23,9 +23,6 @@ spec:
               image: 773488857071.dkr.ecr.us-west-2.amazonaws.com/hippware/overseer:latest
               imagePullPolicy: Always
               args: ["bin/overseer", "run_op", "ImageUpload"]
-              envFrom:
-                - secretRef:
-                    name: overseer-secrets
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -54,7 +51,4 @@ spec:
                   name: webhook
               imagePullPolicy: Always
               args: ["bin/overseer", "run_op", "SMSInvite"]
-              envFrom:
-                - secretRef:
-                    name: overseer-secrets
 ---
