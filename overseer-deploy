@@ -1,9 +1,6 @@
 #!/bin/sh
 
-shift
-
-REVISION="${1:-"${CI_COMMIT_ID}"}"
-shift
+export REVISION="${CI_COMMIT_ID:-"$(git rev-parse HEAD)"}"
 
 if [ "${REVISION}" = "" ]; then
   script=$(basename "${0}")
