@@ -39,6 +39,10 @@ environment :prod do
   set include_src: false
   set cookie: :"V)MJ1~n1kmY<%_g*LzS6XeE.qK<{b;B7|NzSFJr*nnIAV0_6jhr,A%Aa7H$|Q_%$"
   set vm_args: "rel/vm.args"
+
+  set config_providers: [
+    {ConfexVault.ConfexProvider, []}
+  ]
 end
 
 # You may define one or more releases in this file.
