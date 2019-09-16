@@ -12,4 +12,4 @@ config :confex_vault, ConfexVault.VaultAdapter,
   vault_prefix: "secret/overseer/"
 
 config :vaultex,
-  vault_addr: "vault-vault.vault:8200"
+  vault_addr: "http://vault-vault.vault:8200"
