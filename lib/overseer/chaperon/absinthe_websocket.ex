@@ -90,7 +90,7 @@ defmodule Overseer.Chaperon.AbsintheWebsocket do
          msg.topic == "__absinthe__:control" && msg.payload.status == "ok" do
       session
     else
-      error(session, "Packet match error #{inspect msg}")
+      error(session, "Packet match error #{inspect(msg)}")
     end
   end
 
