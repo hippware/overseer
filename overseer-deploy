@@ -27,12 +27,14 @@ export KUBECONFIG="${KUBECONFIG:-"${HOME}/.kube/config"}"
 
 cluster_conf=/tmp/cluster.tfstate.json
 ssl_conf=/tmp/ssl.tfstate.json
+overseer_conf=/tmp/overseer.tfstate.json
 output_bindings=/tmp/bindings.json
 
 aws s3 cp s3://hippware-terraform-state/cluster/terraform.tfstate ${cluster_conf}
 aws s3 cp s3://hippware-terraform-state/ssl/terraform.tfstate ${ssl_conf}
+aws s3 cp s3://hippware-terraform-state/overseer/terraform.tfstate ${overseer_conf}
 
-jq -s '[.[].outputs] | add' ${cluster_conf} > ${output_bindings}
+jq -s '[.[].outputs] | add' ${cluster_conf} ${ssl_conf} ${overseer_conf} > ${output_bindings}
 
 kubernetes-deploy "${namespace}" "${context}" \
   --template-dir="${template_dir}" \
