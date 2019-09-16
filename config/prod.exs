@@ -8,7 +8,7 @@ config :overseer,
   twilio_auth_token: {{:via, VaultAdapter}, "twilio-auth-token"},
   enable_pagerduty: true
 
-config :confex_vault, ConfexVault.VaultAdapater,
+config :confex_vault, ConfexVault.VaultAdapter,
   vault_prefix: "secret/overseer/"
 
 config :vaultex,
