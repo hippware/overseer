@@ -31,7 +31,7 @@ defmodule Overseer.MixProject do
       {:chaperon, "~> 0.3"},
       {:confex_vault, github: "hippware/confex_vault", branch: "master"},
       {:cowboy, "~> 2.6"},
-      {:ex_twilio, "~> 0.7.0"},
+      {:ex_twilio, "~> 0.8.0"},
       {:faker, "~> 0.12"},
       {:guardian, "~> 1.2.1"},
       {:httpoison, "~> 1.5", override: true},
